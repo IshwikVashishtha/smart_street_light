@@ -217,13 +217,13 @@ EMAIL_HOST_PASSWORD=your-app-password
 
 The API is configured to allow cross-origin requests. Update `ALLOWED_HOSTS` and CORS settings in `settings.py` for production.
 
-## 🧪 Testing
+<!-- ## 🧪 Testing
 
 Run the test suite:
 
 ```bash
 python manage.py test
-```
+``` -->
 
 ## 📦 Deployment
 
@@ -265,15 +265,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/your-repo/issues) page
-2. Create a new issue with detailed information
-3. Contact the development team
+<!-- 1. Check the [Issues](https://github.com/your-repo/issues) page -->
+1. Create a new issue with detailed information
+2. Contact the development team
 
-## 🔄 Version History
+<!-- ## 🔄 Version History
 
 - **v1.0.0**: Initial release with basic device management and monitoring
 - **v1.1.0**: Added scheduling and alert system
-- **v1.2.0**: Enhanced authentication and CORS support
+- **v1.2.0**: Enhanced authentication and CORS support -->
 
 ---
 
