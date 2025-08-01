@@ -72,7 +72,4 @@ def control_device(request):
         return Response({'message': 'Command updated'})
     except Device.DoesNotExist:
         return Response({'error': 'Device not found'}, status=404)
-    
-
-
 

@@ -128,7 +128,6 @@ Authorization: Bearer <your-jwt-token>
 {
     "device_id": "SL001",
     "command": "ON",
-    "duration": 60
 }
 ```
 
@@ -183,7 +182,7 @@ The API uses JWT (JSON Web Tokens) for authentication. To get a token:
 ### DeviceCommand
 - `device`: One-to-one relationship with Device
 - `command`: Command to execute (ON/OFF)
-- `duration`: Duration in minutes
+<!-- - `duration`: Duration in minutes -->
 
 ### Schedule
 - `device`: Foreign key to Device
