@@ -6,6 +6,7 @@ from .models import *
 from .serializers import *
 from .alerts import send_email_alert
 from django.core.mail import send_mail
+from datetime import time
 
 LOW_POWER_THRESHOLD = 10  # this is in watts
 
@@ -70,6 +71,95 @@ def control_device(request):
             # 'duration': duration
         })
         return Response({'message': 'Command updated'})
+    except Device.DoesNotExist:
+        return Response({'error': 'Device not found'}, status=404)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_schedules(request):
+    schedules = Schedule.objects.all()
+    serializer = ScheduleSerializer(schedules, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_schedule(request):
+    serializer = ScheduleSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_schedule(request, schedule_id):
+    try:
+        schedule = Schedule.objects.get(id=schedule_id)
+        schedule.delete()
+        return Response({'message': 'Schedule deleted'})
+    except Schedule.DoesNotExist:
+        return Response({'error': 'Schedule not found'}, status=404)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_device_data(request, device_id):
+    try:
+        device = Device.objects.get(device_id=device_id)
+        # Get the latest device data
+        latest_data = DeviceData.objects.filter(device=device).order_by('-timestamp').first()
+        
+        # Get historical data for charts (last 24 hours)
+        from datetime import datetime, timedelta
+        yesterday = datetime.now() - timedelta(days=1)
+        historical_data = DeviceData.objects.filter(
+            device=device,
+            timestamp__gte=yesterday
+        ).order_by('timestamp')
+        
+        # Get recent activity (last 10 commands)
+        recent_commands = DeviceCommand.objects.filter(device=device).order_by('-id')[:10]
+        
+        response_data = {
+            'device': {
+                'id': device.id,
+                'device_id': device.device_id,
+                'location': device.location,
+                'total_lights': device.total_lights,
+                'estimated_load': device.estimated_load,
+                'status': device.status,
+            },
+            'latest_data': {
+                'voltage': latest_data.voltage if latest_data else 0,
+                'current': latest_data.current if latest_data else 0,
+                'power': latest_data.power if latest_data else 0,
+                'energy': latest_data.energy if latest_data else 0,
+                'status': latest_data.status if latest_data else 'OFF',
+                'timestamp': latest_data.timestamp if latest_data else None,
+            },
+            'historical_data': [
+                {
+                    'time': data.timestamp.strftime('%H:%M'),
+                    'power': data.power,
+                    'voltage': data.voltage,
+                    'current': data.current,
+                    'energy': data.energy,
+                }
+                for data in historical_data
+            ],
+            'recent_activity': [
+                {
+                    'action': f"Device turned {cmd.command}",
+                    'timestamp': cmd.id,  # Using ID as timestamp for now
+                }
+                for cmd in recent_commands
+            ]
+        }
+        
+        return Response(response_data)
     except Device.DoesNotExist:
         return Response({'error': 'Device not found'}, status=404)
 
