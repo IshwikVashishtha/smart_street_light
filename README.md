@@ -346,7 +346,7 @@ String checkCommands() {
    - Configure environment variables
    - Set up HTTPS
 
-## 🧪 Testing
+<!-- ## 🧪 Testing
 
 ### Backend Testing
 ```bash
@@ -358,7 +358,7 @@ python manage.py test
 ```bash
 cd frontend
 npm test
-```
+``` -->
 
 ## 🤝 Contributing
 
@@ -390,4 +390,4 @@ If you encounter any issues or have questions:
 
 ---
 
-**Note**: This is a development version. For production use, ensure all security measures are properly configured. 
+**Note**: This is a development version. For production use, ensure all security measures are properly configured.
