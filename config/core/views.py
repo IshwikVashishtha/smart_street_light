@@ -1,14 +1,16 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes , authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
 from .serializers import *
 from .alerts import send_email_alert
+from django.core.mail import send_mail
 
 LOW_POWER_THRESHOLD = 10  # this is in watts
 
 @api_view(['POST'])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def report_data(request):
     serializer = DeviceDataSerializer(data=request.data)
@@ -23,6 +25,7 @@ def report_data(request):
     return Response(serializer.errors, status=400)
 
 @api_view(['GET'])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def get_command(request):
     device_id = request.GET.get('device_id')
@@ -55,7 +58,7 @@ def list_devices(request):
 def control_device(request):
     device_id = request.data.get('device_id')
     command = request.data.get('command')
-    duration = request.data.get('duration', 0)
+    # duration = request.data.get('duration', 0)
 
     try:
         device = Device.objects.get(device_id=device_id)
@@ -64,8 +67,12 @@ def control_device(request):
 
         DeviceCommand.objects.update_or_create(device=device, defaults={
             'command': command,
-            'duration': duration
+            # 'duration': duration
         })
         return Response({'message': 'Command updated'})
     except Device.DoesNotExist:
         return Response({'error': 'Device not found'}, status=404)
+    
+
+
+

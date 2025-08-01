@@ -7,4 +7,5 @@ urlpatterns = [
     path('api/register_device', views.register_device),
     path('api/list_devices', views.list_devices),
     path('api/control_device', views.control_device),
+     path('api/test_email/', views.test_email),
 ]

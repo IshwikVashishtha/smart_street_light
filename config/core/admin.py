@@ -17,7 +17,7 @@ class DeviceDataAdmin(admin.ModelAdmin):
 
 @admin.register(DeviceCommand)
 class DeviceCommandAdmin(admin.ModelAdmin):
-    list_display = ('device', 'command', 'duration')
+    list_display = ('device', 'command')
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
